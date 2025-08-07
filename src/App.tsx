@@ -1,5 +1,12 @@
+import Navbar from "./components/Navbar";
+
 const App = () => {
-  return <div className="text-6xl font-bold text-blue-800 uppercase">Home</div>;
+  return (
+    <>
+      <Navbar />
+      Another
+    </>
+  );
 };
 
 export default App;
