@@ -1,8 +1,11 @@
 @import "tailwindcss";
-@plugin "daisyui";
+/* @plugin "daisyui"; */
 @import url("https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&display=swap");
 
 @theme {
   --font-bodoni: "Bodoni Moda";
   --color-header-bg: #3535353d;
+  --color-background: #262626;
+  --color-my-primary: #16a085;
+  --color-foreground: #ffffff;
 }
