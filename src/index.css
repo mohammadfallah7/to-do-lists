@@ -8,4 +8,20 @@
   --color-background: #262626;
   --color-my-primary: #16a085;
   --color-foreground: #ffffff;
+  --color-muted: #3d3d3d;
+  --color-overlay: #1f1f1f;
+}
+
+@layer components {
+  .btn {
+    @apply rounded-lg px-3 py-2;
+  }
+
+  .btn-primary {
+    @apply bg-my-primary;
+  }
+
+  .btn-outline {
+    @apply border-muted border;
+  }
 }
