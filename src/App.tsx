@@ -1,6 +1,7 @@
 import type { AxiosResponse } from "axios";
 import { LucideCheck, LucideLoader2, LucideTrash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import Container from "./components/Container";
 import Navbar from "./components/Navbar";
 import { axiosInstance } from "./lib/utils";
@@ -50,10 +51,12 @@ const App = () => {
           setTask("");
           toggleModal();
           setIsCreatingTask(false);
+          toast.success("Task created successfully!");
         })
         .catch((error) => {
           console.error(error);
           setIsCreatingTask(false);
+          toast.error("Oops, something went wrong!");
         });
     }
   };
@@ -76,6 +79,7 @@ const App = () => {
       })
       .catch((error) => {
         setTasks(initialState);
+        toast.error("Oops, something went wrong!");
         console.log(error);
       });
   };
@@ -86,8 +90,9 @@ const App = () => {
     setTasks(tasks.filter((task) => task.id !== id));
 
     axiosInstance.delete(`/todo-lists/${id}`).catch((error) => {
-      console.error(error);
       setTasks(initialState);
+      toast.error("Oops, something went wrong!");
+      console.error(error);
     });
   };
 
