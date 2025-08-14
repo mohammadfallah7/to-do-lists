@@ -12,7 +12,6 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [task, setTask] = useState("");
-  const [isCreatingTask, setIsCreatingTask] = useState(false);
 
   // Mount, Unmount
   useEffect(() => {
@@ -38,7 +37,19 @@ const App = () => {
 
   const createTask = () => {
     if (task) {
-      setIsCreatingTask(true);
+      const initialState = [...tasks];
+
+      setTasks([
+        {
+          task,
+          createdAt: Date.now().toString(),
+          id: 0,
+          isDone: false,
+          updatedAt: Date.now().toString(),
+        },
+        ...tasks,
+      ]);
+      toggleModal();
 
       axiosInstance
         .post<TaskPayload, AxiosResponse<TaskModel>>(
@@ -47,16 +58,16 @@ const App = () => {
           { headers: { "Content-Type": "application/json" } },
         )
         .then((res) => {
-          setTasks([res.data, ...tasks]);
+          setTasks((prev) =>
+            prev.map((task) => (task.id === 0 ? { ...res.data } : task)),
+          );
+
           setTask("");
-          toggleModal();
-          setIsCreatingTask(false);
-          toast.success("Task created successfully!");
         })
         .catch((error) => {
-          console.error(error);
-          setIsCreatingTask(false);
+          setTasks(initialState);
           toast.error("Oops, something went wrong!");
+          console.error(error);
         });
     }
   };
@@ -168,15 +179,10 @@ const App = () => {
                 Cancel
               </button>
               <button
-                disabled={isCreatingTask}
                 onClick={createTask}
                 className="btn btn-primary disabled:bg-[#16a08469]"
               >
-                {isCreatingTask ? (
-                  <LucideLoader2 className="size-5 animate-spin" />
-                ) : (
-                  "Create"
-                )}
+                Create
               </button>
             </div>
           </div>
