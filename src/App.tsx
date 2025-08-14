@@ -1,4 +1,5 @@
 import type { AxiosResponse } from "axios";
+import { LucideLoader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Container from "./components/Container";
 import Navbar from "./components/Navbar";
@@ -7,6 +8,7 @@ import type { TaskModel, TaskPayload } from "./types/task.model";
 
 const App = () => {
   const [tasks, setTasks] = useState<TaskModel[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [task, setTask] = useState("");
   const [isCreatingTask, setIsCreatingTask] = useState(false);
@@ -15,10 +17,13 @@ const App = () => {
   useEffect(() => {
     const controller = new AbortController();
 
+    setIsLoading(true);
+
     axiosInstance
       .get<TaskModel[]>("/todo-lists", { signal: controller.signal })
       .then((res) => {
         setTasks(res.data);
+        setIsLoading(false);
       });
 
     return () => {
@@ -96,6 +101,12 @@ const App = () => {
           </button>
         </section>
         <section className="space-y-5">
+          {isLoading && (
+            <div className="flex h-[calc(100vh-12rem)] flex-col items-center justify-center gap-5">
+              <LucideLoader2 className="animate-spin" />
+              <p className="">Tasks are loading...</p>
+            </div>
+          )}
           {tasks.map((task) => (
             <div
               className="bg-overlay border-muted flex items-center gap-5 rounded-lg border p-3"
