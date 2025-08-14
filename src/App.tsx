@@ -1,5 +1,5 @@
 import type { AxiosResponse } from "axios";
-import { LucideLoader2 } from "lucide-react";
+import { LucideCheck, LucideLoader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Container from "./components/Container";
 import Navbar from "./components/Navbar";
@@ -113,9 +113,11 @@ const App = () => {
               key={task.id}
             >
               <div
-                className={`size-4 rounded ${task.isDone ? "bg-my-primary" : "border-muted border-2"}`}
+                className={`flex size-4 items-center justify-center rounded ${task.isDone ? "bg-my-primary" : "border-muted border-2"}`}
                 onClick={() => completeTask(task.id)}
-              />
+              >
+                {task.isDone && <LucideCheck className="size-3" />}
+              </div>
               <p className={`${task.isDone && "line-through"}`}>{task.task}</p>
             </div>
           ))}
