@@ -9,3 +9,8 @@ export type TaskModel = {
 export type TaskPayload = {
   task: string;
 };
+
+export type UpdateTaskPayload = {
+  task?: string;
+  isDone?: boolean;
+};

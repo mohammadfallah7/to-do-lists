@@ -1,11 +1,14 @@
-import type { AxiosResponse } from "axios";
 import { LucideCheck, LucideLoader2, LucideTrash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Container from "./components/Container";
 import Navbar from "./components/Navbar";
-import { axiosInstance } from "./lib/utils";
-import type { TaskModel, TaskPayload } from "./types/task.model";
+import taskService from "./lib/task-service";
+import type {
+  TaskModel,
+  TaskPayload,
+  UpdateTaskPayload,
+} from "./types/task.model";
 
 const App = () => {
   const [tasks, setTasks] = useState<TaskModel[]>([]);
@@ -19,12 +22,10 @@ const App = () => {
 
     setIsLoading(true);
 
-    axiosInstance
-      .get<TaskModel[]>("/todo-lists", { signal: controller.signal })
-      .then((res) => {
-        setTasks(res.data);
-        setIsLoading(false);
-      });
+    taskService.getAll(controller).then((res) => {
+      setTasks(res.data);
+      setIsLoading(false);
+    });
 
     return () => {
       controller.abort();
@@ -51,12 +52,8 @@ const App = () => {
       ]);
       toggleModal();
 
-      axiosInstance
-        .post<TaskPayload, AxiosResponse<TaskModel>>(
-          "/todo-lists",
-          { task },
-          { headers: { "Content-Type": "application/json" } },
-        )
+      taskService
+        .create<TaskPayload>({ task })
         .then((res) => {
           setTasks((prev) =>
             prev.map((task) => (task.id === 0 ? { ...res.data } : task)),
@@ -79,12 +76,8 @@ const App = () => {
       tasks.map((task) => (task.id === id ? { ...task, isDone: true } : task)),
     );
 
-    axiosInstance
-      .patch(
-        `/todo-lists/${id}`,
-        { isDone: true },
-        { headers: { "Content-Type": "application/json" } },
-      )
+    taskService
+      .patch<UpdateTaskPayload>(id, { isDone: true })
       .then((res) => {
         setTasks(tasks.map((task) => (task.id === id ? res.data : task)));
       })
@@ -100,7 +93,7 @@ const App = () => {
 
     setTasks(tasks.filter((task) => task.id !== id));
 
-    axiosInstance.delete(`/todo-lists/${id}`).catch((error) => {
+    taskService.delete(id).catch((error) => {
       setTasks(initialState);
       toast.error("Oops, something went wrong!");
       console.error(error);
