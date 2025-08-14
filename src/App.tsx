@@ -1,5 +1,5 @@
 import type { AxiosResponse } from "axios";
-import { LucideCheck, LucideLoader2 } from "lucide-react";
+import { LucideCheck, LucideLoader2, LucideTrash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Container from "./components/Container";
 import Navbar from "./components/Navbar";
@@ -80,6 +80,17 @@ const App = () => {
       });
   };
 
+  const deleteTask = (id: number) => {
+    const initialState = [...tasks];
+
+    setTasks(tasks.filter((task) => task.id !== id));
+
+    axiosInstance.delete(`/todo-lists/${id}`).catch((error) => {
+      console.error(error);
+      setTasks(initialState);
+    });
+  };
+
   return (
     <div className="bg-background text-foreground relative min-h-screen">
       <Navbar />
@@ -109,16 +120,24 @@ const App = () => {
           )}
           {tasks.map((task) => (
             <div
-              className="bg-overlay border-muted flex items-center gap-5 rounded-lg border p-3"
+              className="bg-overlay border-muted flex items-center justify-between gap-2 rounded-lg border p-3"
               key={task.id}
             >
-              <div
-                className={`flex size-4 items-center justify-center rounded ${task.isDone ? "bg-my-primary" : "border-muted border-2"}`}
-                onClick={() => completeTask(task.id)}
-              >
-                {task.isDone && <LucideCheck className="size-3" />}
+              <div className="flex items-center gap-5">
+                <div
+                  className={`flex size-4 items-center justify-center rounded ${task.isDone ? "bg-my-primary" : "border-muted border-2"}`}
+                  onClick={() => completeTask(task.id)}
+                >
+                  {task.isDone && <LucideCheck className="size-3" />}
+                </div>
+                <p className={`${task.isDone && "line-through"}`}>
+                  {task.task}
+                </p>
               </div>
-              <p className={`${task.isDone && "line-through"}`}>{task.task}</p>
+              <LucideTrash2
+                onClick={() => deleteTask(task.id)}
+                className="size-5"
+              />
             </div>
           ))}
         </section>
