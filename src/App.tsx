@@ -158,7 +158,7 @@ const App = () => {
               onChange={(e) => setTask(e.target.value)}
               className="bg-overlay border-muted w-full resize-none rounded-lg border px-2 py-1 focus:outline-0"
             ></textarea>
-            <div className="space-x-3 self-end">
+            <div className="flex items-center gap-3 self-end">
               <button className="btn btn-outline" onClick={toggleModal}>
                 Cancel
               </button>
@@ -167,7 +167,11 @@ const App = () => {
                 onClick={createTask}
                 className="btn btn-primary disabled:bg-[#16a08469]"
               >
-                {isCreatingTask ? "Creating..." : "Create"}
+                {isCreatingTask ? (
+                  <LucideLoader2 className="size-5 animate-spin" />
+                ) : (
+                  "Create"
+                )}
               </button>
             </div>
           </div>
