@@ -11,10 +11,19 @@ const App = () => {
   const [task, setTask] = useState("");
   const [isCreatingTask, setIsCreatingTask] = useState(false);
 
+  // Mount, Unmount
   useEffect(() => {
-    axiosInstance.get<TaskModel[]>("/todo-lists").then((res) => {
-      setTasks(res.data);
-    });
+    const controller = new AbortController();
+
+    axiosInstance
+      .get<TaskModel[]>("/todo-lists", { signal: controller.signal })
+      .then((res) => {
+        setTasks(res.data);
+      });
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   const toggleModal = () => {
